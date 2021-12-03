@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace AppAloj.Entidades
@@ -8,29 +9,30 @@ namespace AppAloj.Entidades
     public class Cowork
     {
         [Key]
-        public int IdCowork { get; set; }
+        public int idcowork { get; set; }
 
         [Required]
-        public string Nombre { get; set; }
+        public int idcategoria { get; set; }
 
         [Required]
-        public string Dueno { get; set; }
+        public string nombre { get; set; }
 
         [Required]
-        public string Descripcion { get; set; }
+        public string dueno { get; set; }
+
+        public string descripcion { get; set; }
 
         [Required]
-        public string Direccion { get; set; }
+        public string direccion { get; set; }
 
         [Required]
-        public int IdCategoria { get; set; }
+        public decimal precio { get; set; }
 
-        [Required]
-        public decimal Precio { get; set; }
+        public string foto { get; set; }
 
-        public string Foto { get; set; }
+        public bool condicion { get; set; }
 
-
+        [ForeignKey("idcategoria")]
         public Categoria Categoria { get; set; }
 
         public ICollection<Reserva> Reservas { get; set; }

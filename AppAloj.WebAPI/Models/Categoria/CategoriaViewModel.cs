@@ -7,10 +7,12 @@ namespace AppAloj.WebAPI.Models
 {
     public class CategoriaViewModel
     {
-        public int IdCategoria { get; set; }
+        public int idcategoria { get; set; }
 
-        public string Nombre { get; set; }
+        public string nombre { get; set; }
 
-        public string Descripcion { get; set; }
+        public string descripcion { get; set; }
+
+        public bool condicion { get; set; }
     }
 }

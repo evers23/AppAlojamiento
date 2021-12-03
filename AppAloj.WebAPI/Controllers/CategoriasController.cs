@@ -1,13 +1,13 @@
-﻿using System;
+﻿using AppAloj.Datos;
+using AppAloj.Entidades;
+using AppAloj.WebAPI.Models;
+using AppAloj.WebAPI.Models.Categoria;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AppAloj.Datos;
-using AppAloj.Entidades;
-using AppAloj.WebAPI.Models;
 
 namespace AppAloj.WebAPI.Controllers
 {
@@ -22,23 +22,37 @@ namespace AppAloj.WebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Categorias
-        [HttpGet]
-        public async Task<IEnumerable<CategoriaViewModel>> GetCategorias()
+        // GET: api/Categorias/Listar
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<CategoriaViewModel>> Listar()
         {
             var categoria = await _context.Categorias.ToListAsync();
 
             return categoria.Select(c => new CategoriaViewModel
             {
-                IdCategoria = c.IdCategoria,
-                Nombre = c.Nombre,
-                Descripcion = c.Descripcion
+                idcategoria = c.idcategoria,
+                nombre = c.nombre,
+                descripcion = c.descripcion,
+                condicion = c.condicion
             });
         }
 
-        // GET: api/Categorias/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> GetCategoria(int id)
+        // GET: api/Categorias/Select
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<CategoriaSelectViewModel>> Select()
+        {
+            var categoria = await _context.Categorias.Where(c => c.condicion == true).ToListAsync();
+
+            return categoria.Select(c => new CategoriaSelectViewModel
+            {
+                idcategoria = c.idcategoria,
+                nombre = c.nombre
+            });
+        }
+
+        // GET: api/Categorias/Mostrar/5
+        [HttpGet("[action]/{id}")]
+        public async Task<ActionResult<Categoria>> Mostrar(int id)
         {
             var categoria = await _context.Categorias.FindAsync(id);
 
@@ -49,31 +63,30 @@ namespace AppAloj.WebAPI.Controllers
 
             return Ok(new CategoriaViewModel
             {
-                IdCategoria = categoria.IdCategoria,
-                Nombre = categoria.Nombre,
-                Descripcion = categoria.Descripcion
+                idcategoria = categoria.idcategoria,
+                nombre = categoria.nombre,
+                descripcion = categoria.descripcion,
+                condicion = categoria.condicion
             });
         }
 
-        // PUT: api/Categorias/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut]
-        public async Task<IActionResult> PutCategoria(CategoriaViewModel model)
+        // PUT: api/Categorias/Editar
+        [HttpPut("[action]")]
+        public async Task<IActionResult> Editar(CategoriaUpdateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (model.IdCategoria <= 0)
+            if (model.idcategoria <= 0)
                 return BadRequest();
 
-            var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.IdCategoria == model.IdCategoria);
+            var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.idcategoria == model.idcategoria);
 
             if (categoria == null)
                 return NotFound();
 
-            categoria.Nombre = model.Nombre;
-            categoria.Descripcion = model.Descripcion;
+            categoria.nombre = model.nombre;
+            categoria.descripcion = model.descripcion;
 
             try
             {
@@ -87,19 +100,18 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        // POST: api/Categorias
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Categoria>> PostCategoria(CategoriaViewModel model)
+        // POST: api/Categorias/Crear
+        [HttpPost("[action]")]
+        public async Task<ActionResult<Categoria>> Crear(CategoriaCreateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             Categoria categoria = new Categoria
             {
-                Nombre = model.Nombre,
-                Descripcion = model.Descripcion
+                nombre = model.nombre,
+                descripcion = model.descripcion,
+                condicion = true
             };
 
             _context.Categorias.Add(categoria);
@@ -116,32 +128,61 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        // DELETE: api/Categorias/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Categoria>> DeleteCategoria(int id)
+        // PUT: api/Categorias/Desactivar/5
+        [HttpPut("[action]/{id}")]
+        public async Task<IActionResult> Desactivar(int id)
         {
-            var categoria = await _context.Categorias.FindAsync(id);
-            if (categoria == null)
-            {
-                return NotFound();
-            }
+            if (id <= 0)
+                return BadRequest();
 
-            _context.Categorias.Remove(categoria);
+            var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.idcategoria == id);
+
+            if (categoria == null)
+                return NotFound();
+
+            categoria.condicion = false;
+
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (DbUpdateConcurrencyException)
             {
                 return BadRequest();
             }
 
-            return Ok(categoria);
+            return Ok();
+        }
+
+        // PUT: api/Categorias/Activar/5
+        [HttpPut("[action]/{id}")]
+        public async Task<IActionResult> Activar(int id)
+        {
+            if (id <= 0)
+                return BadRequest();
+
+            var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.idcategoria == id);
+
+            if (categoria == null)
+                return NotFound();
+
+            categoria.condicion = true;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
 
         private bool CategoriaExists(int id)
         {
-            return _context.Categorias.Any(e => e.IdCategoria == id);
+            return _context.Categorias.Any(e => e.idcategoria == id);
         }
     }
 }

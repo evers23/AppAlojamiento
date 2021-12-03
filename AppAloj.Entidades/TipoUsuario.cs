@@ -6,10 +6,16 @@ namespace AppAloj.Entidades
     public class TipoUsuario
     {
         [Key]
-        public int IdTipoUsuario { get; set; }
+        public int idtipousuario { get; set; }
 
         [Required]
-        public string Nombre { get; set; }
+        public string nombre { get; set; }
+
+        [Required]
+        [StringLength(256)]
+        public string descripcion { get; set; }
+
+        public bool condicion { get; set; }
 
 
         public ICollection<Usuario> Usuarios { get; set; }

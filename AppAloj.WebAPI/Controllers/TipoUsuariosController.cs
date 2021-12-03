@@ -1,13 +1,13 @@
-﻿using System;
+﻿using AppAloj.Datos;
+using AppAloj.Entidades;
+using AppAloj.WebAPI.Models;
+using AppAloj.WebAPI.Models.TipoUsuario;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AppAloj.Datos;
-using AppAloj.Entidades;
-using AppAloj.WebAPI.Models;
 
 namespace AppAloj.WebAPI.Controllers
 {
@@ -22,22 +22,37 @@ namespace AppAloj.WebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/TipoUsuarios
-        [HttpGet]
-        public async Task<IEnumerable<TipoUsuarioViewModel>> GetTipoUsuarios()
+        // GET: api/TipoUsuarios/Listar
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<TipoUsuarioViewModel>> Listar()
         {
-            var tipoUsuario = await _context.TipoUsuarios.ToListAsync();
+            var tipoUsuarios = await _context.TipoUsuarios.ToListAsync();
 
-            return tipoUsuario.Select(c => new TipoUsuarioViewModel
+            return tipoUsuarios.Select(c => new TipoUsuarioViewModel
             {
-                IdTipoUsuario = c.IdTipoUsuario,
-                Nombre = c.Nombre
+                idtipousuario = c.idtipousuario,
+                nombre = c.nombre,
+                descripcion = c.descripcion,
+                condicion = c.condicion
             });
         }
 
-        // GET: api/TipoUsuarios/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TipoUsuario>> GetTipoUsuario(int id)
+        // GET: api/TipoUsuarios/Select
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<TipoUsuarioSelectViewModel>> Select()
+        {
+            var tipoUsuarios = await _context.TipoUsuarios.Where(c => c.condicion == true).ToListAsync();
+
+            return tipoUsuarios.Select(c => new TipoUsuarioSelectViewModel
+            {
+                idtipousuario = c.idtipousuario,
+                nombre = c.nombre
+            });
+        }
+
+        // GET: api/TipoUsuarios/Mostrar/5
+        [HttpGet("[action]/{id}")]
+        public async Task<ActionResult<TipoUsuario>> Mostrar(int id)
         {
             var tipoUsuario = await _context.TipoUsuarios.FindAsync(id);
 
@@ -46,31 +61,32 @@ namespace AppAloj.WebAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(new TipoUsuarioViewModel 
+            return Ok(new TipoUsuarioViewModel
             {
-                IdTipoUsuario = tipoUsuario.IdTipoUsuario,
-                Nombre = tipoUsuario.Nombre
+                idtipousuario = tipoUsuario.idtipousuario,
+                nombre = tipoUsuario.nombre,
+                descripcion = tipoUsuario.descripcion,
+                condicion = tipoUsuario.condicion
             });
         }
 
-        // PUT: api/TipoUsuarios/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut]
-        public async Task<IActionResult> PutTipoUsuario(TipoUsuarioViewModel model)
+        // PUT: api/TipoUsuarios/Editar
+        [HttpPut("[action]")]
+        public async Task<IActionResult> Editar(TipoUsuarioUpdateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (model.IdTipoUsuario <= 0)
+            if (model.idtipousuario <= 0)
                 return BadRequest();
 
-            var tipoUsuario = await _context.TipoUsuarios.FirstOrDefaultAsync(c => c.IdTipoUsuario == model.IdTipoUsuario);
+            var tipoUsuario = await _context.TipoUsuarios.FirstOrDefaultAsync(c => c.idtipousuario == model.idtipousuario);
 
             if (tipoUsuario == null)
                 return NotFound();
 
-            tipoUsuario.Nombre = model.Nombre;
+            tipoUsuario.nombre = model.nombre;
+            tipoUsuario.descripcion = model.descripcion;
 
             try
             {
@@ -84,18 +100,18 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        // POST: api/TipoUsuarios
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<TipoUsuario>> PostTipoUsuario(TipoUsuarioViewModel model)
+        // POST: api/TipoUsuarios/Crear
+        [HttpPost("[action]")]
+        public async Task<ActionResult<TipoUsuario>> Crear(TipoUsuarioCreateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             TipoUsuario tipoUsuario = new TipoUsuario
             {
-                Nombre = model.Nombre
+                nombre = model.nombre,
+                descripcion = model.descripcion,
+                condicion = true
             };
 
             _context.TipoUsuarios.Add(tipoUsuario);
@@ -112,32 +128,61 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        // DELETE: api/TipoUsuarios/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<TipoUsuario>> DeleteTipoUsuario(int id)
+        // PUT: api/TipoUsuarios/Desactivar/5
+        [HttpPut("[action]/{id}")]
+        public async Task<IActionResult> Desactivar(int id)
         {
-            var tipoUsuario = await _context.TipoUsuarios.FindAsync(id);
-            if (tipoUsuario == null)
-            {
-                return NotFound();
-            }
+            if (id <= 0)
+                return BadRequest();
 
-            _context.TipoUsuarios.Remove(tipoUsuario);
+            var tipoUsuario = await _context.TipoUsuarios.FirstOrDefaultAsync(c => c.idtipousuario == id);
+
+            if (tipoUsuario == null)
+                return NotFound();
+
+            tipoUsuario.condicion = false;
+
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (DbUpdateConcurrencyException)
             {
                 return BadRequest();
             }
 
-            return Ok(tipoUsuario);
+            return Ok();
+        }
+
+        // PUT: api/TipoUsuarios/Activar/5
+        [HttpPut("[action]/{id}")]
+        public async Task<IActionResult> Activar(int id)
+        {
+            if (id <= 0)
+                return BadRequest();
+
+            var tipoUsuario = await _context.TipoUsuarios.FirstOrDefaultAsync(c => c.idtipousuario == id);
+
+            if (tipoUsuario == null)
+                return NotFound();
+
+            tipoUsuario.condicion = true;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
 
         private bool TipoUsuarioExists(int id)
         {
-            return _context.TipoUsuarios.Any(e => e.IdTipoUsuario == id);
+            return _context.TipoUsuarios.Any(e => e.idtipousuario == id);
         }
     }
 }

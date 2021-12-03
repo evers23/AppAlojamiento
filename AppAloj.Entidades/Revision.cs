@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace AppAloj.Entidades
@@ -8,26 +9,27 @@ namespace AppAloj.Entidades
     public class Revision
     {
         [Key]
-        public int IdRevision { get; set; }
+        public int idrevision { get; set; }
 
         [Required]
-        public string Nombre { get; set; }
+        public int idreserva { get; set; }
 
         [Required]
-        public string Email { get; set; }
+        public string nombre { get; set; }
 
         [Required]
-        public DateTime Fecha { get; set; }
+        [EmailAddress]
+        public string email { get; set; }
 
         [Required]
-        public string Mensaje { get; set; }
+        public DateTime fecha { get; set; }
 
         [Required]
-        public int IdReserva { get; set; }
+        public string mensaje { get; set; }
 
         public string indice { get; set; }
 
-
+        [ForeignKey("idreserva")]
         public Reserva Reserva { get; set; }
     }
 }

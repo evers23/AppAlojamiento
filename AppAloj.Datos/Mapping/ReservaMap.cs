@@ -8,7 +8,7 @@ namespace AppAloj.Datos.Mapping
     {
         public void Configure(EntityTypeBuilder<Reserva> builder)
         {
-            builder.ToTable("RESERVA").HasKey(c => c.IdReserva);
+            builder.ToTable("RESERVA").HasKey(c => c.idreserva);
         }
     }
 }

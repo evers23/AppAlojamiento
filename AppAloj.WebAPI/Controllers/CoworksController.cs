@@ -30,14 +30,14 @@ namespace AppAloj.WebAPI.Controllers
 
             return cowork.Select(c => new CoworkViewModel
             {
-                IdCowork = c.IdCowork,
-                Nombre = c.Nombre,
-                Dueno = c.Dueno,
-                Descripcion = c.Descripcion,
-                Direccion = c.Direccion,
-                IdCategoria = c.IdCategoria,
-                Precio = c.Precio,
-                Foto = c.Foto
+                IdCowork = c.idcowork,
+                Nombre = c.nombre,
+                Dueno = c.dueno,
+                Descripcion = c.descripcion,
+                Direccion = c.direccion,
+                IdCategoria = c.idcategoria,
+                Precio = c.precio,
+                Foto = c.foto
             });
         }
 
@@ -54,14 +54,14 @@ namespace AppAloj.WebAPI.Controllers
 
             return Ok(new CoworkViewModel 
             {
-                IdCowork = cowork.IdCowork,
-                Nombre = cowork.Nombre,
-                Dueno = cowork.Dueno,
-                Descripcion = cowork.Descripcion,
-                Direccion = cowork.Direccion,
-                IdCategoria = cowork.IdCategoria,
-                Precio = cowork.Precio,
-                Foto = cowork.Foto
+                IdCowork = cowork.idcowork,
+                Nombre = cowork.nombre,
+                Dueno = cowork.dueno,
+                Descripcion = cowork.descripcion,
+                Direccion = cowork.direccion,
+                IdCategoria = cowork.idcategoria,
+                Precio = cowork.precio,
+                Foto = cowork.foto
             });
         }
 
@@ -77,18 +77,18 @@ namespace AppAloj.WebAPI.Controllers
             if (model.IdCowork <= 0)
                 return BadRequest();
 
-            var cowork = await _context.Coworks.FirstOrDefaultAsync(c => c.IdCowork == model.IdCowork);
+            var cowork = await _context.Coworks.FirstOrDefaultAsync(c => c.idcowork == model.IdCowork);
 
             if (cowork == null)
                 return NotFound();
 
-            cowork.Nombre = model.Nombre;
-            cowork.Dueno = model.Dueno;
-            cowork.Descripcion = model.Descripcion;
-            cowork.Direccion = model.Direccion;
-            cowork.IdCategoria = model.IdCategoria;
-            cowork.Precio = model.Precio;
-            cowork.Foto = model.Foto;
+            cowork.nombre = model.Nombre;
+            cowork.dueno = model.Dueno;
+            cowork.descripcion = model.Descripcion;
+            cowork.direccion = model.Direccion;
+            cowork.idcategoria = model.IdCategoria;
+            cowork.precio = model.Precio;
+            cowork.foto = model.Foto;
 
             try
             {
@@ -113,13 +113,13 @@ namespace AppAloj.WebAPI.Controllers
 
             Cowork cowork = new Cowork
             {
-                Nombre = model.Nombre,
-                Dueno = model.Dueno,
-                Descripcion = model.Descripcion,
-                Direccion = model.Direccion,
-                IdCategoria = model.IdCategoria,
-                Precio = model.Precio,
-                Foto = model.Foto
+                nombre = model.Nombre,
+                dueno = model.Dueno,
+                descripcion = model.Descripcion,
+                direccion = model.Direccion,
+                idcategoria = model.IdCategoria,
+                precio = model.Precio,
+                foto = model.Foto
             };
 
             _context.Coworks.Add(cowork);
@@ -161,7 +161,7 @@ namespace AppAloj.WebAPI.Controllers
 
         private bool CoworkExists(int id)
         {
-            return _context.Coworks.Any(e => e.IdCowork == id);
+            return _context.Coworks.Any(e => e.idcowork == id);
         }
     }
 }

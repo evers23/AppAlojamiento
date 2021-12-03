@@ -30,12 +30,12 @@ namespace AppAloj.WebAPI.Controllers
 
             return revision.Select(c => new RevisionViewModel
             {
-                IdRevision = c.IdRevision,
-                Nombre = c.Nombre,
-                Email = c.Email,
-                Fecha = c.Fecha,
-                Mensaje = c.Mensaje,
-                IdReserva = c.IdReserva,
+                IdRevision = c.idrevision,
+                Nombre = c.nombre,
+                Email = c.email,
+                Fecha = c.fecha,
+                Mensaje = c.mensaje,
+                IdReserva = c.idreserva,
                 indice = c.indice
             });
         }
@@ -53,12 +53,12 @@ namespace AppAloj.WebAPI.Controllers
 
             return Ok(new RevisionViewModel
             {
-                IdRevision = revision.IdRevision,
-                Nombre = revision.Nombre,
-                Email = revision.Email,
-                Fecha = revision.Fecha,
-                Mensaje = revision.Mensaje,
-                IdReserva = revision.IdReserva,
+                IdRevision = revision.idrevision,
+                Nombre = revision.nombre,
+                Email = revision.email,
+                Fecha = revision.fecha,
+                Mensaje = revision.mensaje,
+                IdReserva = revision.idreserva,
                 indice = revision.indice
             });
         }
@@ -75,16 +75,16 @@ namespace AppAloj.WebAPI.Controllers
             if (model.IdRevision <= 0)
                 return BadRequest();
 
-            var revision = await _context.Revisions.FirstOrDefaultAsync(c => c.IdRevision == model.IdRevision);
+            var revision = await _context.Revisions.FirstOrDefaultAsync(c => c.idrevision == model.IdRevision);
 
             if (revision == null)
                 return NotFound();
 
-            revision.Nombre = model.Nombre;
-            revision.Email = model.Email;
-            revision.Fecha = model.Fecha;
-            revision.Mensaje = model.Mensaje;
-            revision.IdReserva = model.IdReserva;
+            revision.nombre = model.Nombre;
+            revision.email = model.Email;
+            revision.fecha = model.Fecha;
+            revision.mensaje = model.Mensaje;
+            revision.idreserva = model.IdReserva;
             revision.indice = model.indice;
 
             try
@@ -110,11 +110,11 @@ namespace AppAloj.WebAPI.Controllers
 
             Revision revision = new Revision
             {
-                Nombre = model.Nombre,
-                Email = model.Email,
-                Fecha = model.Fecha,
-                Mensaje = model.Mensaje,
-                IdReserva = model.IdReserva,
+                nombre = model.Nombre,
+                email = model.Email,
+                fecha = model.Fecha,
+                mensaje = model.Mensaje,
+                idreserva = model.IdReserva,
                 indice = model.indice
             };
 
@@ -158,7 +158,7 @@ namespace AppAloj.WebAPI.Controllers
 
         private bool RevisionExists(int id)
         {
-            return _context.Revisions.Any(e => e.IdRevision == id);
+            return _context.Revisions.Any(e => e.idrevision == id);
         }
     }
 }

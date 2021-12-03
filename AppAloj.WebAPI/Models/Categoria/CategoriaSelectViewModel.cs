@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 
 namespace AppAloj.WebAPI.Models
 {
-    public class TipoUsuarioViewModel
+    public class CategoriaSelectViewModel
     {
-        public int IdTipoUsuario { get; set; }
+        public int idcategoria { get; set; }
 
-        public string Nombre { get; set; }
+        public string nombre { get; set; }
+
     }
 }

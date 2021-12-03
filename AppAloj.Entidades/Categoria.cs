@@ -8,13 +8,16 @@ namespace AppAloj.Entidades
     public class Categoria
     {
         [Key]
-        public int IdCategoria { get; set; }
+        public int idcategoria { get; set; }
 
         [Required]
-        public string Nombre { get; set; }
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Nombre debe tener entre 3 y 50 catacteres")]
+        public string nombre { get; set; }
 
-        [Required]
-        public string Descripcion { get; set; }
+        [StringLength(256)]
+        public string descripcion { get; set; }
+
+        public bool condicion { get; set; }
 
 
         public ICollection<Cowork> Coworks { get; set; }

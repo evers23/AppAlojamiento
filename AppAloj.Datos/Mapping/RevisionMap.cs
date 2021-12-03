@@ -8,7 +8,7 @@ namespace AppAloj.Datos.Mapping
     {
         public void Configure(EntityTypeBuilder<Revision> builder)
         {
-            builder.ToTable("REVISION").HasKey(c => c.IdRevision);
+            builder.ToTable("REVISION").HasKey(c => c.idrevision);
         }
     }
 }

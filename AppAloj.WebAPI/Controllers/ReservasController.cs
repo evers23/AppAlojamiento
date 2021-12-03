@@ -30,13 +30,13 @@ namespace AppAloj.WebAPI.Controllers
 
             return reserva.Select(c => new ReservaViewModel
             {
-                IdReserva = c.IdReserva,
-                IdCowork = c.IdCowork,
-                Nombre = c.Nombre,
-                Email = c.Email,
-                Horas = c.Horas,
-                Fecha = c.Fecha,
-                Mensaje = c.Mensaje,
+                IdReserva = c.idreserva,
+                IdCowork = c.idcowork,
+                Nombre = c.nombre,
+                Email = c.email,
+                Horas = c.horas,
+                Fecha = c.fechainicio,
+                Mensaje = c.mensaje,
                 indice = c.indice
             });
         }
@@ -54,13 +54,13 @@ namespace AppAloj.WebAPI.Controllers
 
             return Ok(new ReservaViewModel 
             {
-                IdReserva = reserva.IdReserva,
-                IdCowork = reserva.IdCowork,
-                Nombre = reserva.Nombre,
-                Email = reserva.Email,
-                Horas = reserva.Horas,
-                Fecha = reserva.Fecha,
-                Mensaje = reserva.Mensaje,
+                IdReserva = reserva.idreserva,
+                IdCowork = reserva.idcowork,
+                Nombre = reserva.nombre,
+                Email = reserva.email,
+                Horas = reserva.horas,
+                Fecha = reserva.fechainicio,
+                Mensaje = reserva.mensaje,
                 indice = reserva.indice
             });
         }
@@ -77,17 +77,17 @@ namespace AppAloj.WebAPI.Controllers
             if (model.IdReserva <= 0)
                 return BadRequest();
 
-            var reserva = await _context.Reservas.FirstOrDefaultAsync(c => c.IdReserva == model.IdReserva);
+            var reserva = await _context.Reservas.FirstOrDefaultAsync(c => c.idreserva == model.IdReserva);
 
             if (reserva == null)
                 return NotFound();
 
-            reserva.IdCowork = model.IdCowork;
-            reserva.Nombre = model.Nombre;
-            reserva.Email = model.Email;
-            reserva.Horas = model.Horas;
-            reserva.Fecha = model.Fecha;
-            reserva.Mensaje = model.Mensaje;
+            reserva.idcowork = model.IdCowork;
+            reserva.nombre = model.Nombre;
+            reserva.email = model.Email;
+            reserva.horas = model.Horas;
+            reserva.fechainicio = model.Fecha;
+            reserva.mensaje = model.Mensaje;
             reserva.indice = model.indice;
 
             try
@@ -113,12 +113,12 @@ namespace AppAloj.WebAPI.Controllers
 
             Reserva reserva = new Reserva
             {
-                IdCowork = model.IdCowork,
-                Nombre = model.Nombre,
-                Email = model.Email,
-                Horas = model.Horas,
-                Fecha = model.Fecha,
-                Mensaje = model.Mensaje,
+                idcowork = model.IdCowork,
+                nombre = model.Nombre,
+                email = model.Email,
+                horas = model.Horas,
+                fechainicio = model.Fecha,
+                mensaje = model.Mensaje,
                 indice = model.indice
             };
 
@@ -162,7 +162,7 @@ namespace AppAloj.WebAPI.Controllers
 
         private bool ReservaExists(int id)
         {
-            return _context.Reservas.Any(e => e.IdReserva == id);
+            return _context.Reservas.Any(e => e.idreserva == id);
         }
     }
 }

@@ -1,13 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AppAloj.Entidades
+namespace AppAloj.WebAPI.Models.Usuario
 {
-    public class Usuario
+    public class UsuarioCreateViewModel
     {
-        [Key]
-        public int idusuario { get; set; }
-
         [Required]
         public int idtipousuario { get; set; }
 
@@ -17,21 +13,15 @@ namespace AppAloj.Entidades
         [Required]
         public string nombre { get; set; }
 
-        [Required]
         public string apellido { get; set; }
 
         [Required]
+        [EmailAddress]
         public string email { get; set; }
 
         [Required]
-        public byte[] passwordhash { get; set; }
-
-        [Required]
-        public byte[] passwordsalt { get; set; }
+        public string password { get; set; }
 
         public bool condicion { get; set; }
-
-        [ForeignKey("idtipousuario")]
-        public TipoUsuario TipoUsuario { get; set; }
     }
 }

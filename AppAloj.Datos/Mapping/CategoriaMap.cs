@@ -8,7 +8,7 @@ namespace AppAloj.Datos.Mapping
     {
         public void Configure(EntityTypeBuilder<Categoria> builder)
         {
-            builder.ToTable("CATEGORIA").HasKey(c => c.IdCategoria);
+            builder.ToTable("CATEGORIA").HasKey(c => c.idcategoria);
         }
     }
 }
