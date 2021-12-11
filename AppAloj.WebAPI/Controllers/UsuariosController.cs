@@ -2,6 +2,7 @@
 using AppAloj.Entidades;
 using AppAloj.WebAPI.Models;
 using AppAloj.WebAPI.Models.Usuario;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,7 @@ namespace AppAloj.WebAPI.Controllers
             _config = config;
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpGet("[action]")]
         public async Task<IEnumerable<UsuarioViewModel>> Listar()
         {
@@ -72,6 +74,7 @@ namespace AppAloj.WebAPI.Controllers
             });
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPut("[action]")]
         public async Task<IActionResult> Editar(UsuarioUpdateViewModel model)
         {
@@ -112,6 +115,7 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPost("[action]")]
         public async Task<ActionResult<Usuario>> Crear(UsuarioCreateViewModel model)
         {
@@ -149,6 +153,7 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Desactivar(int id)
         {
@@ -174,6 +179,7 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Activar(int id)
         {

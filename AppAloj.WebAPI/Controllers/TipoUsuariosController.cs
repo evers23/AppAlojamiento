@@ -2,6 +2,7 @@
 using AppAloj.Entidades;
 using AppAloj.WebAPI.Models;
 using AppAloj.WebAPI.Models.TipoUsuario;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace AppAloj.WebAPI.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     [Route("api/[controller]")]
     [ApiController]
     public class TipoUsuariosController : ControllerBase
