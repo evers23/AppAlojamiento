@@ -23,6 +23,7 @@ namespace AppAloj.WebAPI.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Administrador,Cliente")]
         [HttpGet("[action]")]
         public async Task<IEnumerable<CoworkViewModel>> Listar()
         {
@@ -43,6 +44,7 @@ namespace AppAloj.WebAPI.Controllers
             });
         }
 
+        [Authorize(Roles = "Administrador,Cliente")]
         [HttpGet("[action]/{id}")]
         public async Task<ActionResult<Cowork>> Mostrar(int id)
         {
@@ -68,7 +70,7 @@ namespace AppAloj.WebAPI.Controllers
             });
         }
 
-
+        [Authorize(Roles = "Administrador")]
         [HttpPut("[action]")]
         public async Task<IActionResult> Editar(CoworkUpdateViewModel model)
         {
@@ -103,6 +105,7 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPost("[action]")]
         public async Task<ActionResult<Cowork>> Crear(CoworkCreateViewModel model)
         {
@@ -135,7 +138,7 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-
+        [Authorize(Roles = "Administrador")]
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Desactivar(int id)
         {
@@ -161,6 +164,7 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Activar(int id)
         {

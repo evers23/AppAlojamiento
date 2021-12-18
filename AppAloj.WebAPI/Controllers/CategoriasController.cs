@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace AppAloj.WebAPI.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriasController : ControllerBase

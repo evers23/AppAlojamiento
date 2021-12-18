@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using AppAloj.Datos;
 using AppAloj.Entidades;
 using AppAloj.WebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppAloj.WebAPI.Controllers
 {
+    [Authorize(Roles = "Administrador,Cliente")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReservasController : ControllerBase
