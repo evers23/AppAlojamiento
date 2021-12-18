@@ -23,71 +23,73 @@ namespace AppAloj.WebAPI.Controllers
         }
 
         // GET: api/Reservas
-        [HttpGet]
-        public async Task<IEnumerable<ReservaViewModel>> GetReservas()
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<ReservaViewModel>> Listar()
         {
-            var reserva =  await _context.Reservas.ToListAsync();
+            var reservas = await _context.Reservas.Include(a => a.Cowork).ToListAsync();
 
-            return reserva.Select(c => new ReservaViewModel
+            return reservas.Select(c => new ReservaViewModel
             {
-                IdReserva = c.idreserva,
-                IdCowork = c.idcowork,
-                Nombre = c.nombre,
-                Email = c.email,
-                Horas = c.horas,
-                Fecha = c.fechainicio,
-                Mensaje = c.mensaje,
+                idreserva = c.idreserva,
+                idcowork = c.idcowork,
+                cowork = c.Cowork.nombre,
+                nombre = c.nombre,
+                email = c.email,
+                horas = c.horas,
+                fechainicio = c.fechainicio,
+                fechafin = c.fechafin,
+                mensaje = c.mensaje,
                 indice = c.indice
             });
         }
 
-        // GET: api/Reservas/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Reserva>> GetReserva(int id)
+        [HttpGet("[action]/{id}")]
+        public async Task<ActionResult<Reserva>> Mostrar(int id)
         {
-            var reserva = await _context.Reservas.FindAsync(id);
+            var reserva = await _context.Reservas.Include(c => c.Cowork).SingleOrDefaultAsync(a => a.idreserva == id);
 
             if (reserva == null)
             {
                 return NotFound();
             }
 
-            return Ok(new ReservaViewModel 
+            return Ok(new ReservaViewModel
             {
-                IdReserva = reserva.idreserva,
-                IdCowork = reserva.idcowork,
-                Nombre = reserva.nombre,
-                Email = reserva.email,
-                Horas = reserva.horas,
-                Fecha = reserva.fechainicio,
-                Mensaje = reserva.mensaje,
+                idreserva = reserva.idreserva,
+                idcowork = reserva.idcowork,
+                cowork = reserva.Cowork.nombre,
+                nombre = reserva.nombre,
+                email = reserva.email,
+                horas = reserva.horas,
+                fechainicio = reserva.fechainicio,
+                fechafin = reserva.fechafin,
+                mensaje = reserva.mensaje,
                 indice = reserva.indice
             });
         }
 
-        // PUT: api/Reservas/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut()]
-        public async Task<IActionResult> PutReserva(ReservaViewModel model)
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> Editar(ReservaUpdateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (model.IdReserva <= 0)
+            if (model.idreserva <= 0)
                 return BadRequest();
 
-            var reserva = await _context.Reservas.FirstOrDefaultAsync(c => c.idreserva == model.IdReserva);
+            var reserva = await _context.Reservas.FirstOrDefaultAsync(c => c.idreserva == model.idreserva);
 
             if (reserva == null)
                 return NotFound();
 
-            reserva.idcowork = model.IdCowork;
-            reserva.nombre = model.Nombre;
-            reserva.email = model.Email;
-            reserva.horas = model.Horas;
-            reserva.fechainicio = model.Fecha;
-            reserva.mensaje = model.Mensaje;
+            reserva.idcowork = model.idcowork;
+            reserva.nombre = model.nombre;
+            reserva.email = model.email;
+            reserva.horas = model.horas;
+            reserva.fechainicio = model.fechainicio;
+            reserva.fechafin = model.fechafin;
+            reserva.mensaje = model.mensaje;
             reserva.indice = model.indice;
 
             try
@@ -102,23 +104,21 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        // POST: api/Reservas
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Reserva>> PostReserva(ReservaViewModel model)
+        [HttpPost("[action]")]
+        public async Task<ActionResult<Reserva>> Crear(ReservaCreateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             Reserva reserva = new Reserva
             {
-                idcowork = model.IdCowork,
-                nombre = model.Nombre,
-                email = model.Email,
-                horas = model.Horas,
-                fechainicio = model.Fecha,
-                mensaje = model.Mensaje,
+                idcowork = model.idcowork,
+                nombre = model.nombre,
+                email = model.email,
+                horas = model.horas,
+                fechainicio = model.fechainicio,
+                fechafin = model.fechafin,
+                mensaje = model.mensaje,
                 indice = model.indice
             };
 
@@ -134,30 +134,6 @@ namespace AppAloj.WebAPI.Controllers
             }
 
             return Ok();
-        }
-
-        // DELETE: api/Reservas/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Reserva>> DeleteReserva(int id)
-        {
-            var reserva = await _context.Reservas.FindAsync(id);
-            if (reserva == null)
-            {
-                return NotFound();
-            }
-
-            _context.Reservas.Remove(reserva);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
-
-            return reserva;
         }
 
         private bool ReservaExists(int id)

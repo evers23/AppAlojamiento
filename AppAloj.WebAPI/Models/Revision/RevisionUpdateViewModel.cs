@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AppAloj.WebAPI.Models
 {
-    public class RevisionViewModel
+    public class RevisionUpdateViewModel
     {
         public int idrevision { get; set; }
 
@@ -18,8 +18,6 @@ namespace AppAloj.WebAPI.Models
         public string mensaje { get; set; }
 
         public int idreserva { get; set; }
-
-        public string reserva { get; set; }
 
         public string indice { get; set; }
     }

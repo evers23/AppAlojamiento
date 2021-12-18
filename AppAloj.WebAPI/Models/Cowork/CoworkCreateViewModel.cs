@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace AppAloj.WebAPI.Models
 {
-    public class CoworkViewModel
+    public class CoworkCreateViewModel
     {
-        public int idcowork { get; set; }
-
         public string nombre { get; set; }
 
         public string dueno { get; set; }
@@ -17,9 +16,8 @@ namespace AppAloj.WebAPI.Models
 
         public string direccion { get; set; }
 
+        [Required]
         public int idcategoria { get; set; }
-
-        public string categoria { get; set; }
 
         public decimal precio { get; set; }
 

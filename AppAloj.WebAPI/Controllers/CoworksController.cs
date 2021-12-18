@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AppAloj.WebAPI.Controllers
 {
-    [Authorize(Roles = "Cliente,Administrador")]
     [Route("api/[controller]")]
     [ApiController]
     public class CoworksController : ControllerBase
@@ -24,73 +23,73 @@ namespace AppAloj.WebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Coworks
-        [HttpGet]
-        public async Task<IEnumerable<CoworkViewModel>> GetCoworks()
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<CoworkViewModel>> Listar()
         {
-            var cowork = await _context.Coworks.ToListAsync();
+            var cowork = await _context.Coworks.Include(a => a.Categoria).ToListAsync();
 
             return cowork.Select(c => new CoworkViewModel
             {
-                IdCowork = c.idcowork,
-                Nombre = c.nombre,
-                Dueno = c.dueno,
-                Descripcion = c.descripcion,
-                Direccion = c.direccion,
-                IdCategoria = c.idcategoria,
-                Precio = c.precio,
-                Foto = c.foto
+                idcowork = c.idcowork,
+                nombre = c.nombre,
+                categoria = c.Categoria.nombre,
+                dueno = c.dueno,
+                descripcion = c.descripcion,
+                direccion = c.direccion,
+                idcategoria = c.idcategoria,
+                precio = c.precio,
+                foto = c.foto,
+                condicion = c.condicion
             });
         }
 
-        // GET: api/Coworks/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Cowork>> GetCowork(int id)
+        [HttpGet("[action]/{id}")]
+        public async Task<ActionResult<Cowork>> Mostrar(int id)
         {
-            var cowork = await _context.Coworks.FindAsync(id);
+            var cowork = await _context.Coworks.Include(c => c.Categoria).SingleOrDefaultAsync(a => a.idcowork == id);
 
             if (cowork == null)
             {
                 return NotFound();
             }
 
-            return Ok(new CoworkViewModel 
+            return Ok(new CoworkViewModel
             {
-                IdCowork = cowork.idcowork,
-                Nombre = cowork.nombre,
-                Dueno = cowork.dueno,
-                Descripcion = cowork.descripcion,
-                Direccion = cowork.direccion,
-                IdCategoria = cowork.idcategoria,
-                Precio = cowork.precio,
-                Foto = cowork.foto
+                idcowork = cowork.idcowork,
+                nombre = cowork.nombre,
+                categoria = cowork.Categoria.nombre,
+                dueno = cowork.dueno,
+                descripcion = cowork.descripcion,
+                direccion = cowork.direccion,
+                idcategoria = cowork.idcategoria,
+                precio = cowork.precio,
+                foto = cowork.foto,
+                condicion = cowork.condicion
             });
         }
 
-        // PUT: api/Coworks/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut]
-        public async Task<IActionResult> PutCowork(CoworkViewModel model)
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> Editar(CoworkUpdateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (model.IdCowork <= 0)
+            if (model.idcowork <= 0)
                 return BadRequest();
 
-            var cowork = await _context.Coworks.FirstOrDefaultAsync(c => c.idcowork == model.IdCowork);
+            var cowork = await _context.Coworks.FirstOrDefaultAsync(c => c.idcowork == model.idcowork);
 
             if (cowork == null)
                 return NotFound();
 
-            cowork.nombre = model.Nombre;
-            cowork.dueno = model.Dueno;
-            cowork.descripcion = model.Descripcion;
-            cowork.direccion = model.Direccion;
-            cowork.idcategoria = model.IdCategoria;
-            cowork.precio = model.Precio;
-            cowork.foto = model.Foto;
+            cowork.nombre = model.nombre;
+            cowork.dueno = model.dueno;
+            cowork.descripcion = model.descripcion;
+            cowork.direccion = model.direccion;
+            cowork.idcategoria = model.idcategoria;
+            cowork.precio = model.precio;
+            cowork.foto = model.foto;
 
             try
             {
@@ -104,24 +103,22 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        // POST: api/Coworks
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Cowork>> PostCowork(CoworkViewModel model)
+        [HttpPost("[action]")]
+        public async Task<ActionResult<Cowork>> Crear(CoworkCreateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             Cowork cowork = new Cowork
             {
-                nombre = model.Nombre,
-                dueno = model.Dueno,
-                descripcion = model.Descripcion,
-                direccion = model.Direccion,
-                idcategoria = model.IdCategoria,
-                precio = model.Precio,
-                foto = model.Foto
+                nombre = model.nombre,
+                dueno = model.dueno,
+                descripcion = model.descripcion,
+                direccion = model.direccion,
+                idcategoria = model.idcategoria,
+                precio = model.precio,
+                foto = model.foto,
+                condicion = true
             };
 
             _context.Coworks.Add(cowork);
@@ -138,28 +135,57 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        // DELETE: api/Coworks/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Cowork>> DeleteCowork(int id)
-        {
-            var cowork = await _context.Coworks.FindAsync(id);
-            if (cowork == null)
-            {
-                return NotFound();
-            }
 
-            _context.Coworks.Remove(cowork);
+        [HttpPut("[action]/{id}")]
+        public async Task<IActionResult> Desactivar(int id)
+        {
+            if (id <= 0)
+                return BadRequest();
+
+            var cowork = await _context.Coworks.FirstOrDefaultAsync(c => c.idcowork == id);
+
+            if (cowork == null)
+                return NotFound();
+
+            cowork.condicion = false;
+
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (DbUpdateConcurrencyException)
             {
                 return BadRequest();
             }
 
-            return cowork;
+            return Ok();
         }
+
+        [HttpPut("[action]/{id}")]
+        public async Task<IActionResult> Activar(int id)
+        {
+            if (id <= 0)
+                return BadRequest();
+
+            var cowork = await _context.Coworks.FirstOrDefaultAsync(c => c.idcowork == id);
+
+            if (cowork == null)
+                return NotFound();
+
+            cowork.condicion = true;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
 
         private bool CoworkExists(int id)
         {

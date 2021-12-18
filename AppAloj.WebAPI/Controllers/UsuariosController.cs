@@ -30,11 +30,10 @@ namespace AppAloj.WebAPI.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = "Administrador")]
         [HttpGet("[action]")]
         public async Task<IEnumerable<UsuarioViewModel>> Listar()
         {
-            var usuario = await _context.Usuarios.Include(a => a.idtipousuario).ToListAsync();
+            var usuario = await _context.Usuarios.Include(a => a.TipoUsuario).ToListAsync();
 
             return usuario.Select(c => new UsuarioViewModel
             {
@@ -74,7 +73,6 @@ namespace AppAloj.WebAPI.Controllers
             });
         }
 
-        [Authorize(Roles = "Administrador")]
         [HttpPut("[action]")]
         public async Task<IActionResult> Editar(UsuarioUpdateViewModel model)
         {
@@ -115,7 +113,6 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Administrador")]
         [HttpPost("[action]")]
         public async Task<ActionResult<Usuario>> Crear(UsuarioCreateViewModel model)
         {
@@ -153,7 +150,6 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Administrador")]
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Desactivar(int id)
         {
@@ -179,7 +175,6 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Administrador")]
         [HttpPut("[action]/{id}")]
         public async Task<IActionResult> Activar(int id)
         {

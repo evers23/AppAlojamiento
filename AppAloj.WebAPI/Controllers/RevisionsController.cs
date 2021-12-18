@@ -22,29 +22,29 @@ namespace AppAloj.WebAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Revisions
-        [HttpGet]
-        public async Task<IEnumerable<RevisionViewModel>> GetRevisions()
+        // GET: api/Reservas
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<RevisionViewModel>> Listar()
         {
-            var revision = await _context.Revisions.ToListAsync();
+            var revision = await _context.Revisions.Include(a => a.Reserva).ToListAsync();
 
             return revision.Select(c => new RevisionViewModel
             {
-                IdRevision = c.idrevision,
-                Nombre = c.nombre,
-                Email = c.email,
-                Fecha = c.fecha,
-                Mensaje = c.mensaje,
-                IdReserva = c.idreserva,
+                idrevision  =c.idrevision,
+                idreserva = c.idreserva,
+                reserva = c.Reserva.nombre,
+                nombre = c.nombre,
+                email = c.email,
+                fecha = c.fecha,
+                mensaje = c.mensaje,
                 indice = c.indice
             });
         }
 
-        // GET: api/Revisions/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Revision>> GetRevision(int id)
+        [HttpGet("[action]/{id}")]
+        public async Task<ActionResult<Revision>> Mostrar(int id)
         {
-            var revision = await _context.Revisions.FindAsync(id);
+            var revision = await _context.Revisions.Include(c => c.Reserva).SingleOrDefaultAsync(a => a.idrevision == id);
 
             if (revision == null)
             {
@@ -53,38 +53,37 @@ namespace AppAloj.WebAPI.Controllers
 
             return Ok(new RevisionViewModel
             {
-                IdRevision = revision.idrevision,
-                Nombre = revision.nombre,
-                Email = revision.email,
-                Fecha = revision.fecha,
-                Mensaje = revision.mensaje,
-                IdReserva = revision.idreserva,
+                idrevision = revision.idrevision,
+                idreserva = revision.idreserva,
+                reserva = revision.Reserva.nombre,
+                nombre = revision.nombre,
+                email = revision.email,
+                fecha = revision.fecha,
+                mensaje = revision.mensaje,
                 indice = revision.indice
             });
         }
 
-        // PUT: api/Revisions/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut]
-        public async Task<IActionResult> PutRevision(RevisionViewModel model)
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> Editar(RevisionUpdateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (model.IdRevision <= 0)
+            if (model.idrevision <= 0)
                 return BadRequest();
 
-            var revision = await _context.Revisions.FirstOrDefaultAsync(c => c.idrevision == model.IdRevision);
+            var revision = await _context.Revisions.FirstOrDefaultAsync(c => c.idrevision == model.idrevision);
 
             if (revision == null)
                 return NotFound();
 
-            revision.nombre = model.Nombre;
-            revision.email = model.Email;
-            revision.fecha = model.Fecha;
-            revision.mensaje = model.Mensaje;
-            revision.idreserva = model.IdReserva;
+            revision.idreserva = model.idreserva;
+            revision.nombre = model.nombre;
+            revision.email = model.email;
+            revision.fecha = model.fecha;
+            revision.mensaje = model.mensaje;
             revision.indice = model.indice;
 
             try
@@ -99,22 +98,19 @@ namespace AppAloj.WebAPI.Controllers
             return Ok();
         }
 
-        // POST: api/Revisions
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Revision>> PostRevision(RevisionViewModel model)
+        [HttpPost("[action]")]
+        public async Task<ActionResult<Revision>> Crear(RevisionCreateViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             Revision revision = new Revision
             {
-                nombre = model.Nombre,
-                email = model.Email,
-                fecha = model.Fecha,
-                mensaje = model.Mensaje,
-                idreserva = model.IdReserva,
+                idreserva = model.idreserva,
+                nombre = model.nombre,
+                email = model.email,
+                fecha = model.fecha,
+                mensaje = model.mensaje,
                 indice = model.indice
             };
 
@@ -130,30 +126,6 @@ namespace AppAloj.WebAPI.Controllers
             }
 
             return Ok();
-        }
-
-        // DELETE: api/Revisions/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Revision>> DeleteRevision(int id)
-        {
-            var revision = await _context.Revisions.FindAsync(id);
-            if (revision == null)
-            {
-                return NotFound();
-            }
-
-            _context.Revisions.Remove(revision);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
-
-            return revision;
         }
 
         private bool RevisionExists(int id)
