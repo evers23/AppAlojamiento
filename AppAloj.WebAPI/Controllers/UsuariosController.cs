@@ -232,6 +232,8 @@ namespace AppAloj.WebAPI.Controllers
 
         }
 
+
+
         private bool UsuarioExists(int id)
         {
             return _context.Usuarios.Any(e => e.idusuario == id);

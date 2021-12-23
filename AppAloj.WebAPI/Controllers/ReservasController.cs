@@ -1,14 +1,16 @@
-﻿using System;
+﻿using AppAloj.Datos;
+using AppAloj.Entidades;
+using AppAloj.WebAPI.Models;
+using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using MimeKit.Text;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AppAloj.Datos;
-using AppAloj.Entidades;
-using AppAloj.WebAPI.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace AppAloj.WebAPI.Controllers
 {
@@ -129,14 +131,59 @@ namespace AppAloj.WebAPI.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+
             }
             catch (Exception ex)
             {
                 return BadRequest();
+
+                
             }
 
             return Ok();
         }
+
+        /*
+        public void Send(string from, string to, string subject, string html)
+        {
+            // create message
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(from));
+            email.To.Add(MailboxAddress.Parse(to));
+            email.Subject = subject;
+            email.Body = new TextPart(TextFormat.Html) { Text = html };
+
+            // send email
+            using var smtp = new SmtpClient();
+            smtp.Connect("smtp.gmail.com", 587, false);
+            smtp.Authenticate("darkgravem@gmail.com", "DarkDr34m");
+            smtp.Send(email);
+            smtp.Disconnect(true);
+        }*/
+
+        /*
+        [HttpPost("[action]")]
+        public Task<ActionResult<Reserva>> sendMail()
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Reserva AppCowork", "darkgravem@gmail.com"));
+            message.To.Add(MailboxAddress.Parse("aroblesrodrigues@gmail.com"));
+            message.Subject = "Wtf";
+            message.Body = new TextPart("plain")
+            {
+                Text = "Estimado(a) "
+            };
+
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 465, false);
+                client.Authenticate("darkgravem@gmail.com", "DarkDr34m");
+                client.Send(message);
+                client.Disconnect(true);
+            }
+
+            return Ok();
+        }*/
 
         private bool ReservaExists(int id)
         {
